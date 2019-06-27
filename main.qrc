@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/mine.png</file>
+        <file>images/eh-48.png</file>
+        <file>images/happy-48.png</file>
+        <file>images/eh-64.png</file>
+        <file>images/happy-64.png</file>
+        <file>images/sad-48.png</file>
+        <file>images/sad-64.png</file>
+        <file>images/qmines.png</file>
+        <file>images/about.png</file>
+        <file>images/flag.png</file>
+        <file>images/laughter-48.png</file>
+        <file>images/new-48.png</file>
+        <file>images/gear-48.png</file>
+        <file>images/pause-48.png</file>
+        <file>images/play-48.png</file>
+        <file>images/color-32.png</file>
+        <file>images/new-32.png</file>
+        <file>images/pause-32.png</file>
+        <file>images/tool-clock-32.png</file>
+        <file>images/tool-clock-48.png</file>
+        <file>images/tool-mine-32.png</file>
+        <file>images/tool-flag-32.png</file>
+        <file>images/nomine.png</file>
+        <file>images/ques-64.png</file>
+        <file>images/star-32.png</file>
+    </qresource>
+</RCC>
