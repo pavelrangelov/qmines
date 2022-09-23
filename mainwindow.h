@@ -18,16 +18,14 @@
 #define DEFAULT_CLOSED_COLOR    QColor(220,220,230) // QColor(170,170,170)
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace Ui
-{
-    class MainWindow;
+namespace Ui {
+class MainWindow;
 }
 
-typedef struct
-{
-    int button;
-    int x;
-    int y;
+typedef struct {
+		int button;
+		int x;
+		int y;
 } KEYMSG_t;
 
 #define GAME_EASY           0
@@ -39,84 +37,81 @@ typedef struct
 
 #define DT_FORMAT "dd-MM-yyyy hh:mm:ss"
 
-typedef struct
-{
-    QString name;
-    QString time;
-    QString dtim;
+typedef struct {
+		QString name;
+		QString time;
+		QString dtim;
 } RESULT_t;
 
-typedef struct
-{
-    int             gameType;
-    unsigned int    closedColor;
-    unsigned int    openedColor;
-    bool			showToolbar;
-    QList<RESULT_t> top[3];
+typedef struct {
+		int gameType;
+		unsigned int closedColor;
+		unsigned int openedColor;
+		bool showToolbar;
+		QList<RESULT_t> top[3];
 } SETTINGS_t;
 
 ///////////////////////////////////////////////////////////////////////////////
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
+class MainWindow: public QMainWindow {
+		Q_OBJECT
 
-    public:
-        explicit MainWindow(QWidget *parent = 0);
-        ~MainWindow();
-        int		loadSettings();
-        void	saveSettings();
+	public:
+		explicit MainWindow(QWidget *parent = 0);
+		~MainWindow();
+		int loadSettings();
+		void saveSettings();
 
-        SETTINGS_t      m_Settings;
-        QColor          m_OpenedColor;
-        QColor          m_ClosedColor;
+		SETTINGS_t m_Settings;
+		QColor m_OpenedColor;
+		QColor m_ClosedColor;
 
-    private:
-        Ui::MainWindow  *ui;
-        QTimer          *m_Timer;
-        QTimer          *m_TimerBtn;
-        QTime           m_ElapsedTime;
-        bool            m_GameFailed;
-        bool            m_GameDone;
-        bool            m_GamePaused;
-        bool            m_TimerRunning;
-        quint16         m_FlagsCount;
-        quint16         m_MinesCount;
-        quint16         m_NumX;
-        quint16         m_NumY;
-        int				m_CurrGame;
-        FinishDialog    *m_FinishDialog;
+	private:
+		Ui::MainWindow *ui;
+		QTimer *m_Timer;
+		QTimer *m_TimerBtn;
+		QTime m_ElapsedTime;
+		bool m_GameFailed;
+		bool m_GameDone;
+		bool m_GamePaused;
+		bool m_TimerRunning;
+		quint16 m_FlagsCount;
+		quint16 m_MinesCount;
+		quint16 m_NumX;
+		quint16 m_NumY;
+		int m_CurrGame;
+		FinishDialog *m_FinishDialog;
 
-        void    startCounter	();
-        void    stopCounter		();
-        void    pauseCounter	();
-        int     checkResult		(QTime result);
-        void	showTopResult	(int game);
+		void startCounter();
+		void stopCounter();
+		void pauseCounter();
+		int checkResult(QTime result);
+		void showTopResult(int game);
 
-    private slots:
-        void on_action_NewGame_triggered();
-        void on_action_PauseGame_triggered();
-        void on_action_About_triggered();
-        void on_action_Easy_triggered();
-        void on_action_Medium_triggered();
-        void on_action_Hard_triggered();
-        void on_action_ColorSettings_triggered();
-        void on_action_HideToolbar_triggered();
-        void on_action_TopResults_triggered();
-        void on_btnNewGame_clicked();
-        void on_toolNewGame_clicked();
-        void on_toolPauseGame_clicked();
-        void slot_timerBtnTout();
-        void slot_squarePressed(KEYMSG_t msg);
-        void slot_gameFailed();
-        void slot_gameDone();
-        void slot_tout1s();
-        void slot_setFlagsCount(quint16 count);
+		private slots:
+		void on_action_NewGame_triggered();
+		void on_action_PauseGame_triggered();
+		void on_action_About_triggered();
+		void on_action_Easy_triggered();
+		void on_action_Medium_triggered();
+		void on_action_Hard_triggered();
+		void on_action_ColorSettings_triggered();
+		void on_action_HideToolbar_triggered();
+		void on_action_TopResults_triggered();
+		void on_btnNewGame_clicked();
+		void on_toolNewGame_clicked();
+		void on_toolPauseGame_clicked();
+		void slot_timerBtnTout();
+		void slot_squarePressed(KEYMSG_t msg);
+		void slot_gameFailed();
+		void slot_gameDone();
+		void slot_tout1s();
+		void slot_setFlagsCount(quint16 count);
 
-    signals:
-        void showFinishDialog();
+		signals:
+		void showFinishDialog();
 
-    protected:
-        virtual void closeEvent(QCloseEvent *event);
+	protected:
+		virtual void closeEvent(QCloseEvent *event);
 };
 
 #endif // MAINWINDOW_H

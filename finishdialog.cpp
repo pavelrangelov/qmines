@@ -4,19 +4,16 @@
 #include "mainwindow.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-FinishDialog::FinishDialog(QWidget *parent, Qt::WindowFlags flags):QDialog(parent, flags)
-{
-    setupUi(this);
+FinishDialog::FinishDialog(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent, flags) {
+	setupUi(this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void FinishDialog::on_btnOK_clicked()
-{
-    accept();
+void FinishDialog::on_btnOK_clicked() {
+	accept();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void FinishDialog::setMessage(QString message)
-{
-    btnOK->setText(message);
+void FinishDialog::setMessage(QString message) {
+	btnOK->setText(message);
 }
