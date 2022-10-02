@@ -41,6 +41,46 @@
 #define _S( x,y,maxx,maxy)	((y)<maxy)
 #define	_SE(x,y,maxx,maxy)	((x)<maxx&&(y)<maxy)
 
+#define HAS_MINE_N(x,y)     HAS_MINE((x)+0,(y)-1)
+#define HAS_MINE_E(x,y)     HAS_MINE((x)+1,(y)+0)
+#define HAS_MINE_S(x,y)     HAS_MINE((x)+0,(y)+1)
+#define HAS_MINE_W(x,y)     HAS_MINE((x)-1,(y)+0)
+
+#define HAS_MINE_NE(x,y)    HAS_MINE((x)+1,(y)-1)
+#define HAS_MINE_SE(x,y)    HAS_MINE((x)+1,(y)+1)
+#define HAS_MINE_SW(x,y)    HAS_MINE((x)-1,(y)+1)
+#define HAS_MINE_NW(x,y)    HAS_MINE((x)-1,(y)-1)
+
+#define IS_CLOSED_N(x,y)    IS_CLOSED((x)+0,(y)-1)
+#define IS_CLOSED_E(x,y)    IS_CLOSED((x)+1,(y)+0)
+#define IS_CLOSED_S(x,y)    IS_CLOSED((x)+0,(y)+1)
+#define IS_CLOSED_W(x,y)    IS_CLOSED((x)-1,(y)+0)
+
+#define IS_CLOSED_NE(x,y)   IS_CLOSED((x)+1,(y)-1)
+#define IS_CLOSED_SE(x,y)   IS_CLOSED((x)+1,(y)+1)
+#define IS_CLOSED_SW(x,y)   IS_CLOSED((x)-1,(y)+1)
+#define IS_CLOSED_NW(x,y)   IS_CLOSED((x)-1,(y)-1)
+
+#define CLR_CLOSED_N(x,y)   CLR_CLOSED((x)+0,(y)-1)
+#define CLR_CLOSED_E(x,y)   CLR_CLOSED((x)+1,(y)+0)
+#define CLR_CLOSED_S(x,y)   CLR_CLOSED((x)+0,(y)+1)
+#define CLR_CLOSED_W(x,y)   CLR_CLOSED((x)-1,(y)+0)
+
+#define CLR_CLOSED_NE(x,y)  CLR_CLOSED((x)+1,(y)-1)
+#define CLR_CLOSED_SE(x,y)  CLR_CLOSED((x)+1,(y)+1)
+#define CLR_CLOSED_SW(x,y)  CLR_CLOSED((x)-1,(y)+1)
+#define CLR_CLOSED_NW(x,y)  CLR_CLOSED((x)-1,(y)-1)
+
+#define OPEN_SQUARE_N(x,y)  openSquares((x)+0,(y)-1)
+#define OPEN_SQUARE_E(x,y)  openSquares((x)+1,(y)+0)
+#define OPEN_SQUARE_S(x,y)  openSquares((x)+0,(y)+1)
+#define OPEN_SQUARE_W(x,y)  openSquares((x)-1,(y)+0)
+
+#define OPEN_SQUARE_NE(x,y) openSquares((x)+1,(y)-1)
+#define OPEN_SQUARE_SE(x,y) openSquares((x)+1,(y)+1)
+#define OPEN_SQUARE_SW(x,y) openSquares((x)-1,(y)+1)
+#define OPEN_SQUARE_NW(x,y) openSquares((x)-1,(y)-1)
+
 const char *MainFrame::m_Text[9] = { "1", "2", "3", "4", "5", "6", "7", "8", "?" };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -310,10 +350,8 @@ void MainFrame::generateMines(int num) {
 
 	qsrand (time(NULL));
 
-for(	i=0; i<num; i++)
-	{
-		do
-		{
+    for(	i=0; i<num; i++) {
+        do {
 			x = qrand()%m_NumX;
 			y = qrand()%m_NumY;
 		}
@@ -444,78 +482,60 @@ void MainFrame::openSquares(int x, int y) {
 	int maxx = m_NumX - 1;
 	int maxy = m_NumY - 1;
 
-	if (x < 0 || x > maxx) {
-		return;
-	}
-	if (y < 0 || y > maxy) {
-		return;
-	}
-	if ( _NW(x,y,maxx,maxy) && HAS_MINE(x - 1, y - 1))
-		return;
-	if ( _N (x,y,maxx,maxy) && HAS_MINE(x, y - 1))
-		return;
-	if ( _NE(x,y,maxx,maxy) && HAS_MINE(x + 1, y - 1))
-		return;
-	if ( _W (x,y,maxx,maxy) && HAS_MINE(x - 1, y))
-		return;
-	if ( _E (x,y,maxx,maxy) && HAS_MINE(x + 1, y))
-		return;
-	if ( _SW(x,y,maxx,maxy) && HAS_MINE(x - 1, y + 1))
-		return;
-	if ( _S (x,y,maxx,maxy) && HAS_MINE(x, y + 1))
-		return;
-	if ( _SE(x,y,maxx,maxy) && HAS_MINE(x + 1, y + 1))
-		return;
+    if (x < 0 || x > maxx) return;
+    if (y < 0 || y > maxy) return;
 
-	if (_NW(x, y, maxx, maxy)) {
-		if (IS_CLOSED(x - 1, y - 1)) {
-			CLR_CLOSED(x - 1, y - 1);
-			openSquares(x - 1, y - 1);
-		}
-	}
-	if (_N(x, y, maxx, maxy)) {
-		if (IS_CLOSED(x + 0, y - 1)) {
-			CLR_CLOSED(x + 0, y - 1);
-			openSquares(x + 0, y - 1);
-		}
-	}
-	if (_NE(x, y, maxx, maxy)) {
-		if (IS_CLOSED(x + 1, y - 1)) {
-			CLR_CLOSED(x + 1, y - 1);
-			openSquares(x + 1, y - 1);
-		}
-	}
-	if (_W(x, y, maxx, maxy)) {
-		if (IS_CLOSED(x - 1, y + 0)) {
-			CLR_CLOSED(x - 1, y + 0);
-			openSquares(x - 1, y + 0);
-		}
-	}
-	if (_E(x, y, maxx, maxy)) {
-		if (IS_CLOSED(x + 1, y + 0)) {
-			CLR_CLOSED(x + 1, y + 0);
-			openSquares(x + 1, y + 0);
-		}
-	}
+    uint16_t n = 0xff;
+    uint16_t e = 0xff;
+    uint16_t w = 0xff;
+    uint16_t s = 0xff;
 
-	if (_SW(x, y, maxx, maxy)) {
-		if (IS_CLOSED(x - 1, y + 1)) {
-			CLR_CLOSED(x - 1, y + 1);
-			openSquares(x - 1, y + 1);
-		}
-	}
-	if (_S(x, y, maxx, maxy)) {
-		if (IS_CLOSED(x + 0, y + 1)) {
-			CLR_CLOSED(x + 0, y + 1);
-			openSquares(x + 0, y + 1);
-		}
-	}
-	if (_SE(x, y, maxx, maxy)) {
-		if (IS_CLOSED(x + 1, y + 1)) {
-			CLR_CLOSED(x + 1, y + 1);
-			openSquares(x + 1, y + 1);
-		}
-	}
+    uint16_t ne = 0xff;
+    uint16_t se = 0xff;
+    uint16_t sw = 0xff;
+    uint16_t nw = 0xff;
+
+    uint16_t cr = nw = m_Field[x][y] & 0xff;
+
+    if (_N(x,y,maxx,maxy) && !HAS_MINE_N(x,y)) n = m_Field[x+0][y-1] & 0xff;
+    if (_E(x,y,maxx,maxy) && !HAS_MINE_E(x,y)) e = m_Field[x+1][y+0] & 0xff;
+    if (_S(x,y,maxx,maxy) && !HAS_MINE_S(x,y)) s = m_Field[x+0][y+1] & 0xff;
+    if (_W(x,y,maxx,maxy) && !HAS_MINE_W(x,y)) w = m_Field[x-1][y+0] & 0xff;
+
+    if (_NE(x,y,maxx,maxy) && !HAS_MINE_NE(x,y)) ne = m_Field[x+1][y-1] & 0xff;
+    if (_SE(x,y,maxx,maxy) && !HAS_MINE_SE(x,y)) se = m_Field[x+1][y+1] & 0xff;
+    if (_SW(x,y,maxx,maxy) && !HAS_MINE_SW(x,y)) sw = m_Field[x-1][y+1] & 0xff;
+    if (_NW(x,y,maxx,maxy) && !HAS_MINE_NW(x,y)) nw = m_Field[x-1][y-1] & 0xff;
+
+    if (_N(x,y,maxx,maxy) && !HAS_MINE_N(x,y) && IS_CLOSED_N(x,y) && (n == 0)) { CLR_CLOSED_N(x,y); OPEN_SQUARE_N(x,y); }
+    if (_E(x,y,maxx,maxy) && !HAS_MINE_E(x,y) && IS_CLOSED_E(x,y) && (e == 0)) { CLR_CLOSED_E(x,y); OPEN_SQUARE_E(x,y); }
+    if (_S(x,y,maxx,maxy) && !HAS_MINE_S(x,y) && IS_CLOSED_S(x,y) && (s == 0)) { CLR_CLOSED_S(x,y); OPEN_SQUARE_S(x,y); }
+    if (_W(x,y,maxx,maxy) && !HAS_MINE_W(x,y) && IS_CLOSED_W(x,y) && (w == 0)) { CLR_CLOSED_W(x,y); OPEN_SQUARE_W(x,y); }
+    if (_NE(x,y,maxx,maxy) && !HAS_MINE_NE(x,y) && IS_CLOSED_NE(x,y) && (ne == 0)) { CLR_CLOSED_NE(x,y); OPEN_SQUARE_NE(x,y); }
+    if (_SE(x,y,maxx,maxy) && !HAS_MINE_SE(x,y) && IS_CLOSED_SE(x,y) && (se == 0)) { CLR_CLOSED_SE(x,y); OPEN_SQUARE_SE(x,y); }
+    if (_SW(x,y,maxx,maxy) && !HAS_MINE_SW(x,y) && IS_CLOSED_SW(x,y) && (sw == 0)) { CLR_CLOSED_SW(x,y); OPEN_SQUARE_SW(x,y); }
+    if (_NW(x,y,maxx,maxy) && !HAS_MINE_NW(x,y) && IS_CLOSED_NW(x,y) && (nw == 0)) { CLR_CLOSED_NW(x,y); OPEN_SQUARE_NW(x,y); }
+
+    if (_N(x,y,maxx,maxy) && HAS_MINE_N(x,y)) return;
+    if (_NE(x,y,maxx,maxy) && HAS_MINE_NE(x,y)) return;
+    if (_E(x,y,maxx,maxy) && HAS_MINE_E(x,y)) return;
+    if (_SE(x,y,maxx,maxy) && HAS_MINE_SE(x,y)) return;
+    if (_S(x,y,maxx,maxy) && HAS_MINE_S(x,y)) return;
+    if (_SW(x,y,maxx,maxy) && HAS_MINE_SW(x,y)) return;
+    if (_W(x,y,maxx,maxy) && HAS_MINE_W(x,y)) return;
+    if (_NW(x,y,maxx,maxy) && HAS_MINE_NW(x,y)) return;
+
+    if (n == 0 || w == 0 || e == 0 || s == 0 || ne == 0 || se == 0 || sw == 0 || nw == 0 || cr == 0) {
+        if (_N(x,y,maxx,maxy) && !HAS_MINE_N(x,y) && IS_CLOSED_N(x,y)) CLR_CLOSED_N(x,y);
+        if (_W(x,y,maxx,maxy) && !HAS_MINE_W(x,y) && IS_CLOSED_W(x,y)) CLR_CLOSED_W(x,y);
+        if (_E(x,y,maxx,maxy) && !HAS_MINE_E(x,y) && IS_CLOSED_E(x,y)) CLR_CLOSED_E(x,y);
+        if (_S(x,y,maxx,maxy) && !HAS_MINE_S(x,y) && IS_CLOSED_S(x,y)) CLR_CLOSED_S(x,y);
+
+        if (_NE(x,y,maxx,maxy) && !HAS_MINE_NE(x,y) && IS_CLOSED_NE(x,y)) CLR_CLOSED_NE(x,y);
+        if (_SE(x,y,maxx,maxy) && !HAS_MINE_SE(x,y) && IS_CLOSED_SE(x,y)) CLR_CLOSED_SE(x,y);
+        if (_SW(x,y,maxx,maxy) && !HAS_MINE_SW(x,y) && IS_CLOSED_SW(x,y)) CLR_CLOSED_SW(x,y);
+        if (_NW(x,y,maxx,maxy) && !HAS_MINE_NW(x,y) && IS_CLOSED_NW(x,y)) CLR_CLOSED_NW(x,y);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
