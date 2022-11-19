@@ -385,6 +385,8 @@
     <addaction name="action_NewGame"/>
     <addaction name="action_PauseGame"/>
     <addaction name="menu_Difficulty"/>
+    <addaction name="separator"/>
+    <addaction name="action_TopResults"/>
    </widget>
    <widget class="QMenu" name="menu_Settings">
     <property name="title">
@@ -399,15 +401,8 @@
     </property>
     <addaction name="action_About"/>
    </widget>
-   <widget class="QMenu" name="menuTools">
-    <property name="title">
-     <string>Tools</string>
-    </property>
-    <addaction name="action_TopResults"/>
-   </widget>
    <addaction name="menu_Game"/>
    <addaction name="menu_Settings"/>
-   <addaction name="menuTools"/>
    <addaction name="menu_Help"/>
   </widget>
   <action name="action_NewGame">
@@ -492,7 +487,7 @@
   <action name="action_TopResults">
    <property name="icon">
     <iconset resource="main.qrc">
-     <normaloff>:/images/star-32.png</normaloff>:/images/star-32.png</iconset>
+     <normaloff>:/images/cup_icon-32.png</normaloff>:/images/cup_icon-32.png</iconset>
    </property>
    <property name="text">
     <string>Top Results</string>

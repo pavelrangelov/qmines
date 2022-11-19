@@ -24,6 +24,7 @@
         <file>images/tool-flag-32.png</file>
         <file>images/nomine.png</file>
         <file>images/ques-64.png</file>
-        <file>images/star-32.png</file>
+        <file>images/cup_icon-32.png</file>
+        <file>images/cup_icon-48.png</file>
     </qresource>
 </RCC>
