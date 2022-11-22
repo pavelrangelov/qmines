@@ -6,12 +6,7 @@
 #include "finishdialog.h"
 #include "resultdialog.h"
 #include "colorsettingsdialog.h"
-
-#define STORE_GAME_TYPE     "Game/GameType"
-#define STORE_CLOSED_COLOR  "Settings/ClosedColor"
-#define STORE_OPENED_COLOR  "Settings/OpenedColor"
-#define STORE_SHOW_TOOLBAR	"Settings/ShowToolbar"
-#define STORE_GEOMETRY      "Settings/Geometry"
+#include "settings.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -43,6 +38,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	m_GamePaused = false;
 
 	m_FinishDialog = NULL;
+
+    ui->action_ShowToolbar->setChecked(true);
+    ui->action_EnableSounds->setChecked(false);
 
 	on_action_NewGame_triggered();
 
@@ -124,14 +122,6 @@ void MainWindow::on_action_NewGame_triggered() {
 	ui->action_PauseGame->setEnabled(false);
 	ui->toolPauseGame->setEnabled(false);
 
-	if (m_Settings.showToolbar) {
-		ui->toolFrame->show();
-		ui->action_HideToolbar->setText(tr("Hide Toolbar"));
-	} else {
-		ui->toolFrame->hide();
-		ui->action_HideToolbar->setText(tr("Show Toolbar"));
-	}
-
 	ui->mainFrame->update();
 }
 
@@ -194,8 +184,8 @@ void MainWindow::on_btnNewGame_clicked() {
 ///////////////////////////////////////////////////////////////////////////////
 void MainWindow::on_action_Easy_triggered() {
 	QSettings settings;
-	m_Settings.gameType = GAME_EASY;
-	settings.setValue(STORE_GAME_TYPE, m_Settings.gameType);
+    g_Settings.gameType = GAME_EASY;
+    settings.setValue(STORE_GAME_TYPE, g_Settings.gameType);
 	on_btnNewGame_clicked();
 	ui->mainFrame->doResize();
 }
@@ -203,8 +193,8 @@ void MainWindow::on_action_Easy_triggered() {
 ///////////////////////////////////////////////////////////////////////////////
 void MainWindow::on_action_Medium_triggered() {
 	QSettings settings;
-	m_Settings.gameType = GAME_MEDIUM;
-	settings.setValue(STORE_GAME_TYPE, m_Settings.gameType);
+    g_Settings.gameType = GAME_MEDIUM;
+    settings.setValue(STORE_GAME_TYPE, g_Settings.gameType);
 	on_btnNewGame_clicked();
 	ui->mainFrame->doResize();
 }
@@ -212,8 +202,8 @@ void MainWindow::on_action_Medium_triggered() {
 ///////////////////////////////////////////////////////////////////////////////
 void MainWindow::on_action_Hard_triggered() {
 	QSettings settings;
-	m_Settings.gameType = GAME_HARD;
-	settings.setValue(STORE_GAME_TYPE, m_Settings.gameType);
+    g_Settings.gameType = GAME_HARD;
+    settings.setValue(STORE_GAME_TYPE, g_Settings.gameType);
 	on_btnNewGame_clicked();
 	ui->mainFrame->doResize();
 }
@@ -226,6 +216,28 @@ void MainWindow::on_action_ColorSettings_triggered() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+void MainWindow::on_action_ShowToolbar_triggered() {
+    QSettings settings;
+
+    g_Settings.showToolbar = ui->action_ShowToolbar->isChecked();
+
+    if (g_Settings.showToolbar) {
+        ui->toolFrame->show();
+    } else {
+        ui->toolFrame->hide();
+    }
+
+    settings.setValue(STORE_SHOW_TOOLBAR, g_Settings.showToolbar);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void MainWindow::on_action_EnableSounds_triggered() {
+    QSettings settings;
+    g_Settings.enableSounds = ui->action_EnableSounds->isChecked();
+    settings.setValue(STORE_ENABLE_SOUNDS, g_Settings.enableSounds);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 void MainWindow::on_action_TopResults_triggered() {
 	ResultDialog dialog(this);
 	dialog.setReadOnly();
@@ -235,23 +247,6 @@ void MainWindow::on_action_TopResults_triggered() {
 ///////////////////////////////////////////////////////////////////////////////
 void MainWindow::on_action_About_triggered() {
 	QMessageBox::about(this, APP_NAME, tr("%1 - %2 by Nifelheim").arg(APP_NAME).arg(APP_VERS));
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void MainWindow::on_action_HideToolbar_triggered() {
-	QSettings settings;
-
-	if (m_Settings.showToolbar) {
-		m_Settings.showToolbar = false;
-		ui->toolFrame->hide();
-		ui->action_HideToolbar->setText(tr("Show Toolbar"));
-	} else {
-		m_Settings.showToolbar = true;
-		ui->toolFrame->show();
-		ui->action_HideToolbar->setText(tr("Hide Toolbar"));
-	}
-
-	settings.setValue(STORE_SHOW_TOOLBAR, m_Settings.showToolbar);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -270,7 +265,6 @@ void MainWindow::slot_squarePressed(KEYMSG_t msg) {
 	}
 }
 
-#include <QDebug>
 ///////////////////////////////////////////////////////////////////////////////
 void MainWindow::slot_gameFailed() {
 	m_GameFailed = true;
@@ -348,28 +342,38 @@ void MainWindow::pauseCounter() {
 int MainWindow::loadSettings() {
 	QSettings settings;
 
-	m_Settings.gameType = settings.value(STORE_GAME_TYPE, 0).toUInt();
+    g_Settings.gameType = settings.value(STORE_GAME_TYPE, 0).toUInt();
 
-	m_Settings.closedColor = settings.value(STORE_CLOSED_COLOR, DEFAULT_CLOSED_COLOR.rgb()).toUInt();
-	m_Settings.openedColor = settings.value(STORE_OPENED_COLOR, DEFAULT_OPENED_COLOR.rgb()).toUInt();
-	m_ClosedColor = QColor(m_Settings.closedColor);
-	m_OpenedColor = QColor(m_Settings.openedColor);
+    g_Settings.closedColor = settings.value(STORE_CLOSED_COLOR, DEFAULT_CLOSED_COLOR.rgb()).toUInt();
+    g_Settings.openedColor = settings.value(STORE_OPENED_COLOR, DEFAULT_OPENED_COLOR.rgb()).toUInt();
+    m_ClosedColor = QColor(g_Settings.closedColor);
+    m_OpenedColor = QColor(g_Settings.openedColor);
 	ui->mainFrame->setClosedColor(m_ClosedColor);
 	ui->mainFrame->setOpenedColor(m_OpenedColor);
 
-	m_Settings.showToolbar = settings.value(STORE_SHOW_TOOLBAR, true).toBool();
+    g_Settings.showToolbar = settings.value(STORE_SHOW_TOOLBAR, true).toBool();
+    ui->action_ShowToolbar->setChecked(g_Settings.showToolbar);
 
-	int g = m_Settings.gameType;
+    g_Settings.enableSounds = settings.value(STORE_ENABLE_SOUNDS, true).toBool();
+    ui->action_EnableSounds->setChecked(g_Settings.enableSounds);
+
+    if (g_Settings.showToolbar) {
+        ui->toolFrame->show();
+    } else {
+        ui->toolFrame->hide();
+    }
+
+    int g = g_Settings.gameType;
 
 	if (g < GAME_CUSTOM) {
 		// Create a list from 10 top result
-		m_Settings.top[g].clear();
+        g_Settings.top[g].clear();
 		for (int i = 0; i < TOP_RESULTS_COUNT; i++) {
 			RESULT_t r;
 			r.name = "";
 			r.time = "00:00:00";
 			r.dtim = "";
-			m_Settings.top[g].append(r);
+            g_Settings.top[g].append(r);
 		}
 		// Read saved list
 		int size = settings.beginReadArray("Top");
@@ -377,19 +381,19 @@ int MainWindow::loadSettings() {
 			settings.setArrayIndex(i);
 			switch (g) {
 				case GAME_EASY:
-					m_Settings.top[g][i].name = settings.value("Easy/Name", "").toString();
-					m_Settings.top[g][i].time = settings.value("Easy/Time", "00:00:00").toString();
-					m_Settings.top[g][i].dtim = settings.value("Easy/DTim", "").toString();
+                    g_Settings.top[g][i].name = settings.value("Easy/Name", "").toString();
+                    g_Settings.top[g][i].time = settings.value("Easy/Time", "00:00:00").toString();
+                    g_Settings.top[g][i].dtim = settings.value("Easy/DTim", "").toString();
 					break;
 				case GAME_MEDIUM:
-					m_Settings.top[g][i].name = settings.value("Medium/Name", "").toString();
-					m_Settings.top[g][i].time = settings.value("Medium/Time", "00:00:00").toString();
-					m_Settings.top[g][i].dtim = settings.value("Medium/DTim", "").toString();
+                    g_Settings.top[g][i].name = settings.value("Medium/Name", "").toString();
+                    g_Settings.top[g][i].time = settings.value("Medium/Time", "00:00:00").toString();
+                    g_Settings.top[g][i].dtim = settings.value("Medium/DTim", "").toString();
 					break;
 				case GAME_HARD:
-					m_Settings.top[g][i].name = settings.value("Hard/Name", "").toString();
-					m_Settings.top[g][i].time = settings.value("Hard/Time", "00:00:00").toString();
-					m_Settings.top[g][i].dtim = settings.value("Hard/DTim", "").toString();
+                    g_Settings.top[g][i].name = settings.value("Hard/Name", "").toString();
+                    g_Settings.top[g][i].time = settings.value("Hard/Time", "00:00:00").toString();
+                    g_Settings.top[g][i].dtim = settings.value("Hard/DTim", "").toString();
 					break;
 			}
 		}
@@ -403,14 +407,14 @@ int MainWindow::loadSettings() {
 void MainWindow::saveSettings() {
 	QSettings settings;
 
-	int g = m_Settings.gameType;
+    int g = g_Settings.gameType;
 
 	settings.setValue(STORE_GEOMETRY, saveGeometry());
 
-	settings.setValue(STORE_CLOSED_COLOR, m_Settings.closedColor);
-	settings.setValue(STORE_OPENED_COLOR, m_Settings.openedColor);
+    settings.setValue(STORE_CLOSED_COLOR, g_Settings.closedColor);
+    settings.setValue(STORE_OPENED_COLOR, g_Settings.openedColor);
 
-	settings.setValue(STORE_SHOW_TOOLBAR, m_Settings.showToolbar);
+    settings.setValue(STORE_SHOW_TOOLBAR, g_Settings.showToolbar);
 
 	if (g < GAME_CUSTOM) {
 		settings.beginWriteArray("Top");
@@ -418,19 +422,19 @@ void MainWindow::saveSettings() {
 			settings.setArrayIndex(i);
 			switch (g) {
 				case GAME_EASY:
-					settings.setValue("Easy/Name", m_Settings.top[g][i].name);
-					settings.setValue("Easy/Time", m_Settings.top[g][i].time);
-					settings.setValue("Easy/DTim", m_Settings.top[g][i].dtim);
+                    settings.setValue("Easy/Name", g_Settings.top[g][i].name);
+                    settings.setValue("Easy/Time", g_Settings.top[g][i].time);
+                    settings.setValue("Easy/DTim", g_Settings.top[g][i].dtim);
 					break;
 				case GAME_MEDIUM:
-					settings.setValue("Medium/Name", m_Settings.top[g][i].name);
-					settings.setValue("Medium/Time", m_Settings.top[g][i].time);
-					settings.setValue("Medium/DTim", m_Settings.top[g][i].dtim);
+                    settings.setValue("Medium/Name", g_Settings.top[g][i].name);
+                    settings.setValue("Medium/Time", g_Settings.top[g][i].time);
+                    settings.setValue("Medium/DTim", g_Settings.top[g][i].dtim);
 					break;
 				case GAME_HARD:
-					settings.setValue("Hard/Name", m_Settings.top[g][i].name);
-					settings.setValue("Hard/Time", m_Settings.top[g][i].time);
-					settings.setValue("Hard/DTim", m_Settings.top[g][i].dtim);
+                    settings.setValue("Hard/Name", g_Settings.top[g][i].name);
+                    settings.setValue("Hard/Time", g_Settings.top[g][i].time);
+                    settings.setValue("Hard/DTim", g_Settings.top[g][i].dtim);
 					break;
 			}
 		}
@@ -441,19 +445,19 @@ void MainWindow::saveSettings() {
 ///////////////////////////////////////////////////////////////////////////////
 int MainWindow::checkResult(QTime result) {
 	int i;
-	int g = m_Settings.gameType;
+    int g = g_Settings.gameType;
 
 	if (g < GAME_CUSTOM) {
 		for (i = 0; i < TOP_RESULTS_COUNT; i++) {
-			QTime time = QTime::fromString(m_Settings.top[g][i].time, "hh:mm:ss");
+            QTime time = QTime::fromString(g_Settings.top[g][i].time, "hh:mm:ss");
 
-			if (result <= time || m_Settings.top[g][i].time == "00:00:00" || m_Settings.top[g][i].time.isEmpty()) {
+            if (result <= time || g_Settings.top[g][i].time == "00:00:00" || g_Settings.top[g][i].time.isEmpty()) {
 				RESULT_t r;
 				r.name = "";
 				r.time = result.toString("hh:mm:ss");
 				r.dtim = QDateTime::currentDateTime().toString(DT_FORMAT);
-				m_Settings.top[g].insert(i, r);
-				m_Settings.top[g].removeLast();
+                g_Settings.top[g].insert(i, r);
+                g_Settings.top[g].removeLast();
 				return i;
 			}
 		}
@@ -464,8 +468,8 @@ int MainWindow::checkResult(QTime result) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void MainWindow::showTopResult(int game) {
-	if (game < GAME_CUSTOM && m_Settings.top[game][0].time != "00:00:00" && !m_Settings.top[game][0].time.isEmpty()) {
-		ui->valueBest->setText(QString(m_Settings.top[game][0].time));
+    if (game < GAME_CUSTOM && g_Settings.top[game][0].time != "00:00:00" && !g_Settings.top[game][0].time.isEmpty()) {
+        ui->valueBest->setText(QString(g_Settings.top[game][0].time));
 	} else {
 		ui->valueBest->setText(QString("None"));
 	}

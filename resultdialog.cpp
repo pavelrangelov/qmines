@@ -2,6 +2,7 @@
 
 #include "resultdialog.h"
 #include "mainwindow.h"
+#include "settings.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 ResultDialog::ResultDialog(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent, flags) {
@@ -16,7 +17,7 @@ ResultDialog::ResultDialog(QWidget *parent, Qt::WindowFlags flags) : QDialog(par
 	//table->setColumnWidth(1, 100);
 	//table->horizontalHeader()->setStretchLastSection(true);
 
-	int g = m_Parent->m_Settings.gameType;
+    int g = g_Settings.gameType;
 
 	if (g < GAME_CUSTOM) {
 		for (int i = 0; i < TOP_RESULTS_COUNT; i++) {
@@ -31,10 +32,10 @@ ResultDialog::ResultDialog(QWidget *parent, Qt::WindowFlags flags) : QDialog(par
 			ti = new QTableWidgetItem;
 			table->setItem(i, 2, ti);
 
-			if (m_Parent->m_Settings.top[g][i].time != "00:00:00") {
-				table->item(i, 0)->setText(m_Parent->m_Settings.top[g][i].name);
-				table->item(i, 1)->setText(m_Parent->m_Settings.top[g][i].time);
-				table->item(i, 2)->setText(m_Parent->m_Settings.top[g][i].dtim);
+            if (g_Settings.top[g][i].time != "00:00:00") {
+                table->item(i, 0)->setText(g_Settings.top[g][i].name);
+                table->item(i, 1)->setText(g_Settings.top[g][i].time);
+                table->item(i, 2)->setText(g_Settings.top[g][i].dtim);
 			} else {
 				table->item(i, 0)->setText("");
 				table->item(i, 1)->setText("");
@@ -52,7 +53,7 @@ ResultDialog::ResultDialog(QWidget *parent, Qt::WindowFlags flags) : QDialog(par
 void ResultDialog::setData(int index) {
 	m_Index = index;
 
-	int g = m_Parent->m_Settings.gameType;
+    int g = g_Settings.gameType;
 
 	if (g < GAME_CUSTOM && m_Index != -1) {
 		QTableWidgetItem *ti;
@@ -69,7 +70,7 @@ void ResultDialog::setData(int index) {
 void ResultDialog::setReadOnly() {
 	m_ReadOnly = true;
 
-	int g = m_Parent->m_Settings.gameType;
+    int g = g_Settings.gameType;
 
 	if (g < GAME_CUSTOM) {
 		for (int i = 0; i < TOP_RESULTS_COUNT; i++) {
@@ -81,7 +82,7 @@ void ResultDialog::setReadOnly() {
 ///////////////////////////////////////////////////////////////////////////////
 void ResultDialog::on_btnOK_clicked() {
 	if (!m_ReadOnly) {
-		int g = m_Parent->m_Settings.gameType;
+        int g = g_Settings.gameType;
 
 		if (g < GAME_CUSTOM && m_Index != -1) {
 			QTableWidgetItem *ti = table->item(m_Index, 0);
@@ -92,9 +93,9 @@ void ResultDialog::on_btnOK_clicked() {
 			}
 
 			for (int i = 0; i < TOP_RESULTS_COUNT; i++) {
-				m_Parent->m_Settings.top[g][i].name = table->item(i, 0)->text();
-				m_Parent->m_Settings.top[g][i].time = table->item(i, 1)->text();
-				m_Parent->m_Settings.top[g][i].dtim = table->item(i, 2)->text();
+                g_Settings.top[g][i].name = table->item(i, 0)->text();
+                g_Settings.top[g][i].time = table->item(i, 1)->text();
+                g_Settings.top[g][i].dtim = table->item(i, 2)->text();
 			}
 
 			m_Parent->saveSettings();

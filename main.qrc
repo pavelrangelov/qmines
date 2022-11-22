@@ -26,5 +26,9 @@
         <file>images/ques-64.png</file>
         <file>images/cup_icon-32.png</file>
         <file>images/cup_icon-48.png</file>
+        <file>sounds/click.wav</file>
+        <file>sounds/explosion.wav</file>
+        <file>sounds/success.wav</file>
+        <file>sounds/flag.wav</file>
     </qresource>
 </RCC>

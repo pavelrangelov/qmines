@@ -6,6 +6,7 @@
 #include <QPaintEvent>
 #include <QPixmap>
 #include <QPen>
+#include <QSound>
 
 #include "mainwindow.h"
 
@@ -77,6 +78,11 @@ class MainFrame: public QFrame {
 		int m_PausedW;
 		int m_PausedH;
 		QFont m_PausedFont;
+
+        QSound *m_click;
+        QSound *m_explosion;
+        QSound *m_success;
+        QSound *m_flag;
 
 		static const char *m_Text[9];
 

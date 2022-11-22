@@ -2,6 +2,7 @@
 
 #include "colorsettingsdialog.h"
 #include "mainwindow.h"
+#include "settings.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 ColorSettingsDialog::ColorSettingsDialog(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent, flags) {
@@ -28,8 +29,8 @@ void ColorSettingsDialog::on_btnOK_clicked() {
 	m_Parent->m_ClosedColor = m_CC;
 	m_Parent->m_OpenedColor = m_OC;
 
-	m_Parent->m_Settings.closedColor = m_CC.rgb();
-	m_Parent->m_Settings.openedColor = m_OC.rgb();
+    g_Settings.closedColor = m_CC.rgb();
+    g_Settings.openedColor = m_OC.rgb();
 
 	m_Parent->saveSettings();
 	accept();

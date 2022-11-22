@@ -2,6 +2,7 @@
 #include <time.h>
 
 #include "mainframe.h"
+#include "settings.h"
 
 #define MODE_IS_CLOSED      0x0100
 #define MODE_HAS_FLAG       0x0200
@@ -120,6 +121,11 @@ MainFrame::MainFrame(QWidget *parent) {
 	m_PausedFont.setFamily("Ubuntu");
 #endif
 	m_Font.setBold(true);
+
+    m_click = new QSound(":/sounds/click.wav");
+    m_explosion = new QSound(":/sounds/explosion.wav");
+    m_success = new QSound(":/sounds/success.wav");
+    m_flag = new QSound(":/sounds/flag.wav");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -423,32 +429,32 @@ void MainFrame::showAllFlags() {
 
 ///////////////////////////////////////////////////////////////////////////////
 void MainFrame::processLeftButton(int x, int y) {
-	bool failed = false;
-
 	if (!m_GameEnabled) {
 		return;
 	}
 
 	if (HAS_FLAG(x, y)) {
 		CLR_FLAG(x, y);
-	} else
-		if (HAS_QUEST(x, y)) {
-			CLR_QUEST(x, y);
-		} else {
-			if (HAS_MINE(x, y)) {
-				m_GameFailed = true;
-				setMarked(x, y);
-				showAllSquares();
-				failed = true;
-			}
-
-			CLR_CLOSED(x, y);
-			openSquares(x, y);
-		}
-
-	if (failed) {
-		emit gameFailed();
-	}
+    } else
+    if (HAS_QUEST(x, y)) {
+        CLR_QUEST(x, y);
+    } else {
+        if (HAS_MINE(x, y)) {
+            m_GameFailed = true;
+            setMarked(x, y);
+            showAllSquares();
+            emit gameFailed();
+            if (g_Settings.enableSounds && m_explosion != nullptr) {
+                m_explosion->play();
+            }
+        } else {
+            if (g_Settings.enableSounds && IS_CLOSED(x, y) && m_click != nullptr) {
+                m_click->play();
+            }
+            CLR_CLOSED(x, y);
+            openSquares(x, y);
+        }
+    }
 
 	update();
 }
@@ -474,6 +480,10 @@ void MainFrame::processRightButton(int x, int y) {
 
 		update();
 		emit flagsCountChanged(m_FlagsCount);
+
+        if (g_Settings.enableSounds && m_flag != nullptr) {
+            m_flag->play();
+        }
 	}
 }
 
@@ -549,6 +559,9 @@ void MainFrame::CLR_CLOSED(int x, int y) {
 
 		if (m_EmptySquares <= 0) {
 			emit gameDone();
+            if (g_Settings.enableSounds && m_success != nullptr) {
+                m_success->play();
+            }
 		}
 	}
 }

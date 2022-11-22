@@ -393,7 +393,8 @@
      <string>&amp;Settings</string>
     </property>
     <addaction name="action_ColorSettings"/>
-    <addaction name="action_HideToolbar"/>
+    <addaction name="action_ShowToolbar"/>
+    <addaction name="action_EnableSounds"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -479,9 +480,15 @@
     <string>Color Settings</string>
    </property>
   </action>
-  <action name="action_HideToolbar">
+  <action name="action_ShowToolbar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Hide Toolbar</string>
+    <string>Show Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Toolbar</string>
    </property>
   </action>
   <action name="action_TopResults">
@@ -491,6 +498,14 @@
    </property>
    <property name="text">
     <string>Top Results</string>
+   </property>
+  </action>
+  <action name="action_EnableSounds">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Enable Sounds</string>
    </property>
   </action>
  </widget>

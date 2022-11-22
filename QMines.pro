@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets
+QT       += core gui widgets multimedia
 
 TARGET = QMines
 TEMPLATE = app
@@ -16,14 +16,16 @@ SOURCES += main.cpp\
     finishdialog.cpp \
     resultdialog.cpp \
     colorsettingsdialog.cpp \
-    clickablelabel.cpp
+    clickablelabel.cpp \
+    settings.cpp
 
 HEADERS  += mainwindow.h \
     mainframe.h \
     finishdialog.h \
     resultdialog.h \
     colorsettingsdialog.h \
-    clickablelabel.h
+    clickablelabel.h \
+    settings.h
 
 FORMS    += mainwindow.ui \
     finishdialog.ui \
