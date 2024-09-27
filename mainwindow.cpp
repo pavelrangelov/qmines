@@ -42,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->action_ShowToolbar->setChecked(true);
     ui->action_EnableSounds->setChecked(false);
 
+    m_success = new QSound(":/sounds/success.wav");
+
 	on_action_NewGame_triggered();
 
 	QSettings settings;
@@ -286,6 +288,10 @@ void MainWindow::slot_gameDone() {
 		ui->valueMines->setText(QString("%1/%2").arg(m_MinesCount).arg(m_MinesCount));
 		ui->mainFrame->setGameEnable(false);
 		ui->mainFrame->showAllFlags();
+
+        if (g_Settings.enableSounds && m_success != nullptr) {
+            m_success->play();
+        }
 
 		int index = checkResult(m_ElapsedTime);
 		if (index != -1) {

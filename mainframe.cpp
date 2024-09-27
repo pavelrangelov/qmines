@@ -124,7 +124,6 @@ MainFrame::MainFrame(QWidget *parent) {
 
     m_click = new QSound(":/sounds/click.wav");
     m_explosion = new QSound(":/sounds/explosion.wav");
-    m_success = new QSound(":/sounds/success.wav");
     m_flag = new QSound(":/sounds/flag.wav");
 }
 
@@ -559,9 +558,6 @@ void MainFrame::CLR_CLOSED(int x, int y) {
 
 		if (m_EmptySquares <= 0) {
 			emit gameDone();
-            if (g_Settings.enableSounds && m_success != nullptr) {
-                m_success->play();
-            }
 		}
 	}
 }

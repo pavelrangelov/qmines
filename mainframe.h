@@ -81,7 +81,6 @@ class MainFrame: public QFrame {
 
         QSound *m_click;
         QSound *m_explosion;
-        QSound *m_success;
         QSound *m_flag;
 
 		static const char *m_Text[9];
