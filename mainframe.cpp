@@ -1,5 +1,7 @@
 #include <QtGui>
 #include <QRandomGenerator>
+#include <QAudioDevice>
+#include <QMediaDevices>
 #include <time.h>
 
 #include "mainframe.h"
@@ -123,15 +125,16 @@ MainFrame::MainFrame(QWidget *parent) {
 #endif
 	m_Font.setBold(true);
 
-    m_soundClick.setSource(QUrl(":/sounds/click.wav"));
+    m_soundClick.setSource(QUrl("qrc:/sounds/click.wav"));
     m_soundClick.setLoopCount(1);
     m_soundClick.setVolume(0.5f);
+    qDebug() << m_soundClick.status();
 
-    m_soundExplosion.setSource(QUrl(":/sounds/explosion.wav"));
+    m_soundExplosion.setSource(QUrl("qrc:/sounds/explosion.wav"));
     m_soundExplosion.setLoopCount(1);
     m_soundExplosion.setVolume(0.5f);
 
-    m_soundSetFlag.setSource(QUrl(":/sounds/flag.wav"));
+    m_soundSetFlag.setSource(QUrl("qrc:/sounds/flag.wav"));
     m_soundSetFlag.setLoopCount(1);
     m_soundSetFlag.setVolume(0.5f);
 }
@@ -182,7 +185,7 @@ void MainFrame::paintEvent(QPaintEvent *pe) {
 
 ///////////////////////////////////////////////////////////////////////////////
 void MainFrame::mousePressEvent(QMouseEvent *me) {
-	QPointF pos = me->localPos();
+    QPointF pos = me->position();
 	int button = me->button();
 
 	KEYMSG_t msg;
