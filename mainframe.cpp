@@ -1,4 +1,5 @@
 #include <QtGui>
+#include <QRandomGenerator>
 #include <time.h>
 
 #include "mainframe.h"
@@ -97,15 +98,15 @@ MainFrame::MainFrame(QWidget *parent) {
 	m_NumY = 10;
 	m_MinesCount = 10;
 
-	m_Pen[0].setColor(QColor(0, 0, 255));  // 1 - blue
-	m_Pen[1].setColor(QColor(0, 128, 0));    // 2 - green
-	m_Pen[2].setColor(QColor(128, 128, 0));    // 3 - yellow
-	m_Pen[3].setColor(QColor(128, 0, 128));  // 4 - purple
-	m_Pen[4].setColor(QColor(255, 0, 0));    // 5 - red
-	m_Pen[5].setColor(QColor(204, 204, 0));    // 6
-	m_Pen[6].setColor(QColor(179, 102, 255));  // 7
-	m_Pen[7].setColor(QColor(255, 153, 51));   // 8
-	m_Pen[8].setColor(QColor(0, 0, 0));    // 9
+    m_Pen[0].setColor(QColor(0, 0, 255));       // 1 - blue
+    m_Pen[1].setColor(QColor(0, 128, 0));       // 2 - green
+    m_Pen[2].setColor(QColor(128, 128, 0));     // 3 - yellow
+    m_Pen[3].setColor(QColor(128, 0, 128));     // 4 - purple
+    m_Pen[4].setColor(QColor(255, 0, 0));       // 5 - red
+    m_Pen[5].setColor(QColor(204, 204, 0));     // 6
+    m_Pen[6].setColor(QColor(179, 102, 255));   // 7
+    m_Pen[7].setColor(QColor(255, 153, 51));    // 8
+    m_Pen[8].setColor(QColor(0, 0, 0));         // 9
 
 	m_BorderLightColor = QColor(250, 250, 250);
 	m_BorderDarkColor = QColor(120, 120, 120);
@@ -114,17 +115,25 @@ MainFrame::MainFrame(QWidget *parent) {
 	m_BlackColor = QColor(0, 0, 0);
 
 #ifdef WIN32
-    m_Font          .setFamily("Verdana");
-    m_PausedFont    .setFamily("Verdana");
+    m_Font.setFamily("Verdana");
+    m_PausedFont.setFamily("Verdana");
     #else
 	m_Font.setFamily("Ubuntu");
 	m_PausedFont.setFamily("Ubuntu");
 #endif
 	m_Font.setBold(true);
 
-    m_click = new QSound(":/sounds/click.wav");
-    m_explosion = new QSound(":/sounds/explosion.wav");
-    m_flag = new QSound(":/sounds/flag.wav");
+    m_soundClick.setSource(QUrl(":/sounds/click.wav"));
+    m_soundClick.setLoopCount(1);
+    m_soundClick.setVolume(0.5f);
+
+    m_soundExplosion.setSource(QUrl(":/sounds/explosion.wav"));
+    m_soundExplosion.setLoopCount(1);
+    m_soundExplosion.setVolume(0.5f);
+
+    m_soundSetFlag.setSource(QUrl(":/sounds/flag.wav"));
+    m_soundSetFlag.setLoopCount(1);
+    m_soundSetFlag.setVolume(0.5f);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -353,12 +362,12 @@ void MainFrame::generateMines(int num) {
 		}
 	}
 
-	qsrand (time(NULL));
+    QRandomGenerator rg(time(NULL));
 
-    for(	i=0; i<num; i++) {
+    for(i=0; i<num; i++) {
         do {
-			x = qrand()%m_NumX;
-			y = qrand()%m_NumY;
+            x = rg.generate() % m_NumX;
+            y = rg.generate() % m_NumY;
 		}
 		while(HAS_MINE(x,y));
 
@@ -443,12 +452,12 @@ void MainFrame::processLeftButton(int x, int y) {
             setMarked(x, y);
             showAllSquares();
             emit gameFailed();
-            if (g_Settings.enableSounds && m_explosion != nullptr) {
-                m_explosion->play();
+            if (g_Settings.enableSounds) {
+                m_soundExplosion.play();
             }
         } else {
-            if (g_Settings.enableSounds && IS_CLOSED(x, y) && m_click != nullptr) {
-                m_click->play();
+            if (g_Settings.enableSounds && IS_CLOSED(x, y)) {
+                m_soundClick.play();
             }
             CLR_CLOSED(x, y);
             openSquares(x, y);
@@ -480,8 +489,8 @@ void MainFrame::processRightButton(int x, int y) {
 		update();
 		emit flagsCountChanged(m_FlagsCount);
 
-        if (g_Settings.enableSounds && m_flag != nullptr) {
-            m_flag->play();
+        if (g_Settings.enableSounds) {
+            m_soundSetFlag.play();
         }
 	}
 }

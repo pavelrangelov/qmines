@@ -8,7 +8,7 @@ class FinishDialog: public QDialog, public Ui_FinishDialog {
 		Q_OBJECT
 
 	public:
-		FinishDialog(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+        FinishDialog(QWidget *parent = 0, Qt::WindowFlags flags = Qt::WindowFlags());
 		void setMessage(QString message);
 
 		public slots:

@@ -7,7 +7,7 @@
 #include <QSplashScreen>
 #include <QString>
 #include <QColor>
-#include <QSound>
+#include <QSoundEffect>
 
 #include "finishdialog.h"
 
@@ -66,7 +66,7 @@ class MainWindow: public QMainWindow {
 		quint16 m_NumY;
 		int m_CurrGame;
 		FinishDialog *m_FinishDialog;
-        QSound *m_success;
+        QSoundEffect m_soundSuccess;
 
 		void startCounter();
 		void stopCounter();

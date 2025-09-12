@@ -42,7 +42,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->action_ShowToolbar->setChecked(true);
     ui->action_EnableSounds->setChecked(false);
 
-    m_success = new QSound(":/sounds/success.wav");
+    m_soundSuccess.setSource(QUrl(":/sounds/success.wav"));
+    m_soundSuccess.setLoopCount(1);
+    m_soundSuccess.setVolume(0.5f);
 
 	on_action_NewGame_triggered();
 
@@ -289,8 +291,8 @@ void MainWindow::slot_gameDone() {
 		ui->mainFrame->setGameEnable(false);
 		ui->mainFrame->showAllFlags();
 
-        if (g_Settings.enableSounds && m_success != nullptr) {
-            m_success->play();
+        if (g_Settings.enableSounds) {
+            m_soundSuccess.play();
         }
 
 		int index = checkResult(m_ElapsedTime);

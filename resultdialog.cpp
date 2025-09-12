@@ -42,9 +42,9 @@ ResultDialog::ResultDialog(QWidget *parent, Qt::WindowFlags flags) : QDialog(par
 				table->item(i, 2)->setText("");
 			}
 
-			table->item(i, 0)->setFlags(0/*Qt::ItemIsEnabled|Qt::ItemIsSelectable*/);
-			table->item(i, 1)->setFlags(0/*Qt::ItemIsEnabled|Qt::ItemIsSelectable*/);
-			table->item(i, 2)->setFlags(0/*Qt::ItemIsEnabled|Qt::ItemIsSelectable*/);
+            table->item(i, 0)->setFlags(Qt::NoItemFlags/*Qt::ItemIsEnabled|Qt::ItemIsSelectable*/);
+            table->item(i, 1)->setFlags(Qt::NoItemFlags/*Qt::ItemIsEnabled|Qt::ItemIsSelectable*/);
+            table->item(i, 2)->setFlags(Qt::NoItemFlags/*Qt::ItemIsEnabled|Qt::ItemIsSelectable*/);
 		}
 	}
 }

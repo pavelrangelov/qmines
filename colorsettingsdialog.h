@@ -15,14 +15,14 @@ class ColorSettingsDialog: public QDialog, public Ui_ColorSettingsDialog {
 		Q_OBJECT
 
 	public:
-		ColorSettingsDialog(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+        ColorSettingsDialog(QWidget *parent = 0, Qt::WindowFlags flags = Qt::WindowFlags());
 
 	private:
 		MainWindow *m_Parent;
 		QColor m_CC;
 		QColor m_OC;
 
-		public slots:
+    public slots:
 		void on_btnOK_clicked();
 		void on_btnCancel_clicked();
 		void on_btnReset_clicked();

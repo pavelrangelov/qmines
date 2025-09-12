@@ -13,7 +13,7 @@ class ResultDialog: public QDialog, public Ui_ResultDialog {
 		Q_OBJECT
 
 	public:
-		ResultDialog(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+        ResultDialog(QWidget *parent = 0, Qt::WindowFlags flags = Qt::WindowFlags());
 		void setData(int index);
 		void setReadOnly();
 

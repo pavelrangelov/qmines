@@ -6,7 +6,7 @@
 #include <QPaintEvent>
 #include <QPixmap>
 #include <QPen>
-#include <QSound>
+#include <QSoundEffect>
 
 #include "mainwindow.h"
 
@@ -79,9 +79,9 @@ class MainFrame: public QFrame {
 		int m_PausedH;
 		QFont m_PausedFont;
 
-        QSound *m_click;
-        QSound *m_explosion;
-        QSound *m_flag;
+        QSoundEffect m_soundClick;
+        QSoundEffect m_soundExplosion;
+        QSoundEffect m_soundSetFlag;
 
 		static const char *m_Text[9];
 
