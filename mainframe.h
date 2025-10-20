@@ -79,9 +79,9 @@ class MainFrame: public QFrame {
 		int m_PausedH;
 		QFont m_PausedFont;
 
-        QSoundEffect m_soundClick;
-        QSoundEffect m_soundExplosion;
-        QSoundEffect m_soundSetFlag;
+        QSoundEffect *m_soundClick;
+        QSoundEffect *m_soundExplosion;
+        QSoundEffect *m_soundSetFlag;
 
 		static const char *m_Text[9];
 

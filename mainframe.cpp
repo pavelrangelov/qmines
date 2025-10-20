@@ -125,18 +125,20 @@ MainFrame::MainFrame(QWidget *parent) {
 #endif
 	m_Font.setBold(true);
 
-    m_soundClick.setSource(QUrl("qrc:/sounds/click.wav"));
-    m_soundClick.setLoopCount(1);
-    m_soundClick.setVolume(0.5f);
-    qDebug() << m_soundClick.status();
+    m_soundClick = new QSoundEffect(this);
+    m_soundClick->setSource(QUrl("qrc:/sounds/click.wav"));
+    m_soundClick->setLoopCount(1);
+    m_soundClick->setVolume(0.5f);
 
-    m_soundExplosion.setSource(QUrl("qrc:/sounds/explosion.wav"));
-    m_soundExplosion.setLoopCount(1);
-    m_soundExplosion.setVolume(0.5f);
+    m_soundExplosion = new QSoundEffect(this);
+    m_soundExplosion->setSource(QUrl("qrc:/sounds/explosion.wav"));
+    m_soundExplosion->setLoopCount(1);
+    m_soundExplosion->setVolume(0.5f);
 
-    m_soundSetFlag.setSource(QUrl("qrc:/sounds/flag.wav"));
-    m_soundSetFlag.setLoopCount(1);
-    m_soundSetFlag.setVolume(0.5f);
+    m_soundSetFlag = new QSoundEffect(this);
+    m_soundSetFlag->setSource(QUrl("qrc:/sounds/flag.wav"));
+    m_soundSetFlag->setLoopCount(1);
+    m_soundSetFlag->setVolume(0.5f);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -456,11 +458,11 @@ void MainFrame::processLeftButton(int x, int y) {
             showAllSquares();
             emit gameFailed();
             if (g_Settings.enableSounds) {
-                m_soundExplosion.play();
+                m_soundExplosion->play();
             }
         } else {
             if (g_Settings.enableSounds && IS_CLOSED(x, y)) {
-                m_soundClick.play();
+                m_soundClick->play();
             }
             CLR_CLOSED(x, y);
             openSquares(x, y);
@@ -493,7 +495,7 @@ void MainFrame::processRightButton(int x, int y) {
 		emit flagsCountChanged(m_FlagsCount);
 
         if (g_Settings.enableSounds) {
-            m_soundSetFlag.play();
+            m_soundSetFlag->play();
         }
 	}
 }

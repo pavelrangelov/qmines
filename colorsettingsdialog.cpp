@@ -5,8 +5,10 @@
 #include "settings.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-ColorSettingsDialog::ColorSettingsDialog(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent, flags) {
-	setupUi(this);
+ColorSettingsDialog::ColorSettingsDialog(QWidget *parent, Qt::WindowFlags flags) :
+    QDialog(parent, flags),
+    ui(new Ui::ColorSettingsDialog) {
+    ui->setupUi(this);
 
 	m_Parent = (MainWindow*) parent;
 	m_CC = m_Parent->m_ClosedColor;
@@ -17,15 +19,18 @@ ColorSettingsDialog::ColorSettingsDialog(QWidget *parent, Qt::WindowFlags flags)
 	pixCC.fill(m_Parent->m_ClosedColor);
 	pixOC.fill(m_Parent->m_OpenedColor);
 
-	labelClosedColor->setPixmap(pixCC);
-	labelOpenedColor->setPixmap(pixOC);
+    ui->labelClosedColor->setPixmap(pixCC);
+    ui->labelOpenedColor->setPixmap(pixOC);
 
-	connect(labelClosedColor, SIGNAL(clicked()), this, SLOT(slot_labelClosedColor_clicked()));
-	connect(labelOpenedColor, SIGNAL(clicked()), this, SLOT(slot_labelOpenedColor_clicked()));
+    QObject::connect(ui->labelClosedColor, &ClickableLabel::clicked, this, &ColorSettingsDialog::changeClosedColor);
+    QObject::connect(ui->labelOpenedColor, &ClickableLabel::clicked, this, &ColorSettingsDialog::changeOpenedColor);
+    QObject::connect(ui->btnReset, &QPushButton::clicked, this, &ColorSettingsDialog::resetToDefault);
+    QObject::connect(ui->btnOk, &QPushButton::clicked, this, &ColorSettingsDialog::acceptChanges);
+    QObject::connect(ui->btnCancel, &QPushButton::clicked, this, [this](){reject();});
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void ColorSettingsDialog::on_btnOK_clicked() {
+void ColorSettingsDialog::acceptChanges() {
 	m_Parent->m_ClosedColor = m_CC;
 	m_Parent->m_OpenedColor = m_OC;
 
@@ -37,12 +42,7 @@ void ColorSettingsDialog::on_btnOK_clicked() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void ColorSettingsDialog::on_btnCancel_clicked() {
-	reject();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void ColorSettingsDialog::on_btnReset_clicked() {
+void ColorSettingsDialog::resetToDefault() {
 	m_CC = DEFAULT_CLOSED_COLOR;
 	m_OC = DEFAULT_OPENED_COLOR;
 
@@ -54,30 +54,30 @@ void ColorSettingsDialog::on_btnReset_clicked() {
 	pixCC.fill(m_Parent->m_ClosedColor);
 	pixOC.fill(m_Parent->m_OpenedColor);
 
-	labelClosedColor->setPixmap(pixCC);
-	labelOpenedColor->setPixmap(pixOC);
+    ui->labelClosedColor->setPixmap(pixCC);
+    ui->labelOpenedColor->setPixmap(pixOC);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void ColorSettingsDialog::slot_labelClosedColor_clicked() {
+void ColorSettingsDialog::changeClosedColor() {
 	QColorDialog dialog(this);
 	m_CC = dialog.getColor(m_Parent->m_ClosedColor, this);
 
 	if (m_CC.isValid()) {
 		QPixmap pixCC(48, 48);
 		pixCC.fill(m_CC);
-		labelClosedColor->setPixmap(pixCC);
+        ui->labelClosedColor->setPixmap(pixCC);
 	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void ColorSettingsDialog::slot_labelOpenedColor_clicked() {
+void ColorSettingsDialog::changeOpenedColor() {
 	QColorDialog dialog(this);
 	m_OC = dialog.getColor(m_Parent->m_OpenedColor, this);
 
 	if (m_OC.isValid()) {
 		QPixmap pixOC(48, 48);
 		pixOC.fill(m_OC);
-		labelOpenedColor->setPixmap(pixOC);
+        ui->labelOpenedColor->setPixmap(pixOC);
 	}
 }

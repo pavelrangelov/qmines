@@ -143,7 +143,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btnOK">
+      <widget class="QPushButton" name="btnOk">
        <property name="text">
         <string>OK</string>
        </property>
@@ -163,7 +163,7 @@
  <tabstops>
   <tabstop>btnReset</tabstop>
   <tabstop>btnCancel</tabstop>
-  <tabstop>btnOK</tabstop>
+  <tabstop>btnOk</tabstop>
  </tabstops>
  <resources/>
  <connections/>

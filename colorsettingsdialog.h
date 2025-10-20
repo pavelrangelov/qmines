@@ -9,8 +9,12 @@
 
 #include "ui_colorsettingsdialog.h"
 #include "mainwindow.h"
-#include "clickablelabel.h"
 
+namespace Ui {
+class ColorSettingsDialog;
+}
+
+//-----------------------------------------------------------------------------
 class ColorSettingsDialog: public QDialog, public Ui_ColorSettingsDialog {
 		Q_OBJECT
 
@@ -18,16 +22,16 @@ class ColorSettingsDialog: public QDialog, public Ui_ColorSettingsDialog {
         ColorSettingsDialog(QWidget *parent = 0, Qt::WindowFlags flags = Qt::WindowFlags());
 
 	private:
+        Ui::ColorSettingsDialog *ui;
 		MainWindow *m_Parent;
 		QColor m_CC;
 		QColor m_OC;
 
     public slots:
-		void on_btnOK_clicked();
-		void on_btnCancel_clicked();
-		void on_btnReset_clicked();
-		void slot_labelClosedColor_clicked();
-		void slot_labelOpenedColor_clicked();
+        void acceptChanges();
+        void resetToDefault();
+        void changeClosedColor();
+        void changeOpenedColor();
 };
 
 #endif
