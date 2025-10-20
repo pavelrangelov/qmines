@@ -78,21 +78,21 @@ class MainWindow: public QMainWindow {
         void startNewGame();
         void pauseGame();
         void showAboutDialog();
-		void on_action_Easy_triggered();
-		void on_action_Medium_triggered();
-		void on_action_Hard_triggered();
-		void on_action_ColorSettings_triggered();
-        void on_action_ShowToolbar_triggered();
-        void on_action_EnableSounds_triggered();
-		void on_action_TopResults_triggered();
-		void slot_timerBtnTout();
+        void setGameEasy();
+        void setGameMedium();
+        void setGameHard();
+        void setColorSettings();
+        void setShowToolbar();
+        void setEnableSounds();
+        void showTopResults();
+        void btnSetIcon();
 		void slot_squarePressed(KEYMSG_t msg);
-		void slot_gameFailed();
-		void slot_gameDone();
-		void slot_tout1s();
-		void slot_setFlagsCount(quint16 count);
+        void gameFailed();
+        void gameDone();
+        void timeout1sec();
+        void setFlagsCount(quint16 count);
 
-		signals:
+    signals:
 		void showFinishDialog();
 
 	protected:

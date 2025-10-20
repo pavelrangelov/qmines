@@ -18,9 +18,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	ui->action_Custom->setEnabled(false);
 
     QObject::connect(ui->mainFrame, &MainFrame::squarePressed, this, &MainWindow::slot_squarePressed);
-    QObject::connect(ui->mainFrame, &MainFrame::gameFailed, this, &MainWindow::slot_gameFailed);
-    QObject::connect(ui->mainFrame, &MainFrame::gameDone, this, &MainWindow::slot_gameDone);
-    QObject::connect(ui->mainFrame, &MainFrame::flagsCountChanged, this, &MainWindow::slot_setFlagsCount);
+    QObject::connect(ui->mainFrame, &MainFrame::gameFailed, this, &MainWindow::gameFailed);
+    QObject::connect(ui->mainFrame, &MainFrame::gameDone, this, &MainWindow::gameDone);
+    QObject::connect(ui->mainFrame, &MainFrame::flagsCountChanged, this, &MainWindow::setFlagsCount);
     QObject::connect(ui->action_NewGame, &QAction::triggered, this, &MainWindow::startNewGame);
     QObject::connect(ui->btnNewGame, &QToolButton::clicked, this, &MainWindow::startNewGame);
     QObject::connect(ui->toolNewGame, &QToolButton::clicked, this, &MainWindow::startNewGame);
@@ -28,12 +28,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     QObject::connect(ui->toolPauseGame, &QToolButton::clicked, this, &MainWindow::pauseGame);
     QObject::connect(ui->action_About, &QAction::triggered, this, &MainWindow::showAboutDialog);
 
+    QObject::connect(ui->action_Easy, &QAction::triggered, this, &MainWindow::setGameEasy);
+    QObject::connect(ui->action_Medium, &QAction::triggered, this, &MainWindow::setGameMedium);
+    QObject::connect(ui->action_Hard, &QAction::triggered, this, &MainWindow::setGameHard);
+    QObject::connect(ui->action_ColorSettings, &QAction::triggered, this, &MainWindow::setColorSettings);
+    QObject::connect(ui->action_ShowToolbar, &QAction::triggered, this, &MainWindow::setShowToolbar);
+    QObject::connect(ui->action_EnableSounds, &QAction::triggered, this, &MainWindow::setEnableSounds);
+    QObject::connect(ui->action_TopResults, &QAction::triggered, this, &MainWindow::showTopResults);
+
+
 	m_TimerBtn = new QTimer(this);
 	m_TimerBtn->setSingleShot(true);
-	connect(m_TimerBtn, SIGNAL(timeout()), this, SLOT(slot_timerBtnTout()));
+    connect(m_TimerBtn, &QTimer::timeout, this, &MainWindow::btnSetIcon);
 
-	QTimer *m_Timer = new QTimer(this);
-	connect(m_Timer, SIGNAL(timeout()), this, SLOT(slot_tout1s()));
+    m_Timer = new QTimer(this);
+    QObject::connect(m_Timer, &QTimer::timeout, this, &MainWindow::timeout1sec);
 	m_Timer->start(1000);
 
 	m_ElapsedTime.setHMS(0, 0, 0, 0);
@@ -65,7 +74,7 @@ MainWindow::~MainWindow() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MainWindow::slot_timerBtnTout() {
+void MainWindow::btnSetIcon() {
 	if (!m_GameDone && !m_GameFailed) {
 		ui->btnNewGame->setIcon(QIcon(":/images/happy-48.png"));
 	}
@@ -113,7 +122,7 @@ void MainWindow::startNewGame() {
 	m_TimerRunning = false;
 	m_FlagsCount = 0;
 
-	slot_setFlagsCount (m_FlagsCount);
+    setFlagsCount(m_FlagsCount);
 	stopCounter();
 
 	ui->btnNewGame->setIcon(QIcon(":/images/happy-48.png"));
@@ -178,7 +187,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MainWindow::on_action_Easy_triggered() {
+void MainWindow::setGameEasy() {
 	QSettings settings;
     g_Settings.gameType = GAME_EASY;
     settings.setValue(STORE_GAME_TYPE, g_Settings.gameType);
@@ -187,7 +196,7 @@ void MainWindow::on_action_Easy_triggered() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MainWindow::on_action_Medium_triggered() {
+void MainWindow::setGameMedium() {
 	QSettings settings;
     g_Settings.gameType = GAME_MEDIUM;
     settings.setValue(STORE_GAME_TYPE, g_Settings.gameType);
@@ -196,7 +205,7 @@ void MainWindow::on_action_Medium_triggered() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MainWindow::on_action_Hard_triggered() {
+void MainWindow::setGameHard() {
 	QSettings settings;
     g_Settings.gameType = GAME_HARD;
     settings.setValue(STORE_GAME_TYPE, g_Settings.gameType);
@@ -205,14 +214,14 @@ void MainWindow::on_action_Hard_triggered() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MainWindow::on_action_ColorSettings_triggered() {
+void MainWindow::setColorSettings() {
 	ColorSettingsDialog dialog(this);
 	dialog.exec();
     startNewGame();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MainWindow::on_action_ShowToolbar_triggered() {
+void MainWindow::setShowToolbar() {
     QSettings settings;
 
     g_Settings.showToolbar = ui->action_ShowToolbar->isChecked();
@@ -227,14 +236,14 @@ void MainWindow::on_action_ShowToolbar_triggered() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MainWindow::on_action_EnableSounds_triggered() {
+void MainWindow::setEnableSounds() {
     QSettings settings;
     g_Settings.enableSounds = ui->action_EnableSounds->isChecked();
     settings.setValue(STORE_ENABLE_SOUNDS, g_Settings.enableSounds);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MainWindow::on_action_TopResults_triggered() {
+void MainWindow::showTopResults() {
 	ResultDialog dialog(this);
 	dialog.setReadOnly();
 	dialog.exec();
@@ -263,7 +272,7 @@ void MainWindow::slot_squarePressed(KEYMSG_t msg) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MainWindow::slot_gameFailed() {
+void MainWindow::gameFailed() {
 	m_GameFailed = true;
 	pauseCounter();
 	ui->btnNewGame->setIcon(QIcon(":/images/sad-48.png"));
@@ -275,7 +284,7 @@ void MainWindow::slot_gameFailed() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MainWindow::slot_gameDone() {
+void MainWindow::gameDone() {
 	if (!m_GameFailed && !m_GameDone) {
 		m_GameDone = true;
 		pauseCounter();
@@ -303,7 +312,7 @@ void MainWindow::slot_gameDone() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MainWindow::slot_tout1s() {
+void MainWindow::timeout1sec() {
 	if (m_TimerRunning) {
 		if (m_ElapsedTime.hour() < 23 && m_ElapsedTime.minute() < 59) {
 			m_ElapsedTime = m_ElapsedTime.addSecs(1);
@@ -317,7 +326,7 @@ void MainWindow::slot_tout1s() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MainWindow::slot_setFlagsCount(quint16 count) {
+void MainWindow::setFlagsCount(quint16 count) {
 	m_FlagsCount = count;
 	ui->valueMines->setText(QString("%1/%2").arg(m_FlagsCount).arg(m_MinesCount));
 }
