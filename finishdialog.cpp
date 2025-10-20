@@ -1,19 +1,16 @@
-#include <QtGui>
+#include <QObject>
+#include <QToolButton>
 
 #include "finishdialog.h"
-#include "mainwindow.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-FinishDialog::FinishDialog(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent, flags) {
-	setupUi(this);
-}
+FinishDialog::FinishDialog(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent, flags), ui(new Ui::FinishDialog) {
+    ui->setupUi(this);
 
-///////////////////////////////////////////////////////////////////////////////
-void FinishDialog::on_btnOK_clicked() {
-	accept();
+    QObject::connect(ui->btnOk, &QToolButton::clicked, this, [this](){accept();});
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 void FinishDialog::setMessage(QString message) {
-	btnOK->setText(message);
+    ui->btnOk->setText(message);
 }

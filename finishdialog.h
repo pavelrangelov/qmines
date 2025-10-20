@@ -4,15 +4,20 @@
 #include <QDialog>
 #include "ui_finishdialog.h"
 
-class FinishDialog: public QDialog, public Ui_FinishDialog {
-		Q_OBJECT
+namespace Ui {
+class FinishDialog;
+}
+
+//-----------------------------------------------------------------------------
+class FinishDialog: public QDialog {
+    Q_OBJECT
+
+    private:
+        Ui::FinishDialog *ui;
 
 	public:
         FinishDialog(QWidget *parent = 0, Qt::WindowFlags flags = Qt::WindowFlags());
 		void setMessage(QString message);
-
-		public slots:
-		void on_btnOK_clicked();
 };
 
 #endif

@@ -13,7 +13,7 @@
 
 #define ORG_NAME    "Nifelheim"
 #define APP_NAME    "QMines"
-#define APP_VERS    "1.10"
+#define APP_VERS    "1.11"
 
 #define DEFAULT_OPENED_COLOR    QColor(190,190,180) // QColor(200,200,200)
 #define DEFAULT_CLOSED_COLOR    QColor(220,220,230) // QColor(170,170,170)
@@ -76,8 +76,8 @@ class MainWindow: public QMainWindow {
 
     private slots:
         void startNewGame();
-        void on_action_PauseGame_triggered();
-		void on_action_About_triggered();
+        void pauseGame();
+        void showAboutDialog();
 		void on_action_Easy_triggered();
 		void on_action_Medium_triggered();
 		void on_action_Hard_triggered();
@@ -85,7 +85,6 @@ class MainWindow: public QMainWindow {
         void on_action_ShowToolbar_triggered();
         void on_action_EnableSounds_triggered();
 		void on_action_TopResults_triggered();
-		void on_toolPauseGame_clicked();
 		void slot_timerBtnTout();
 		void slot_squarePressed(KEYMSG_t msg);
 		void slot_gameFailed();

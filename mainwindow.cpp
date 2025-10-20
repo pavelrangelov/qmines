@@ -24,6 +24,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     QObject::connect(ui->action_NewGame, &QAction::triggered, this, &MainWindow::startNewGame);
     QObject::connect(ui->btnNewGame, &QToolButton::clicked, this, &MainWindow::startNewGame);
     QObject::connect(ui->toolNewGame, &QToolButton::clicked, this, &MainWindow::startNewGame);
+    QObject::connect(ui->action_PauseGame, &QAction::triggered, this, &MainWindow::pauseGame);
+    QObject::connect(ui->toolPauseGame, &QToolButton::clicked, this, &MainWindow::pauseGame);
+    QObject::connect(ui->action_About, &QAction::triggered, this, &MainWindow::showAboutDialog);
 
 	m_TimerBtn = new QTimer(this);
 	m_TimerBtn->setSingleShot(true);
@@ -129,12 +132,7 @@ void MainWindow::startNewGame() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MainWindow::on_toolPauseGame_clicked() {
-	on_action_PauseGame_triggered();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void MainWindow::on_action_PauseGame_triggered() {
+void MainWindow::pauseGame() {
 	if (!m_GameDone && !m_GameFailed) {
 		if (m_TimerRunning) {
 			QString title = APP_NAME;
@@ -243,8 +241,9 @@ void MainWindow::on_action_TopResults_triggered() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MainWindow::on_action_About_triggered() {
-	QMessageBox::about(this, APP_NAME, tr("%1 - %2 by Nifelheim").arg(APP_NAME).arg(APP_VERS));
+void MainWindow::showAboutDialog() {
+    QStringView text = QStringView{tr("%1 - %2 by P.Rangelov").arg(APP_NAME, APP_VERS)};
+    QMessageBox::about(this, APP_NAME, text.toString());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
