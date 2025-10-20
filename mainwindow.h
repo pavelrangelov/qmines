@@ -66,7 +66,7 @@ class MainWindow: public QMainWindow {
 		quint16 m_NumY;
 		int m_CurrGame;
 		FinishDialog *m_FinishDialog;
-        QSoundEffect m_soundSuccess;
+        QSoundEffect *m_soundSuccess;
 
 		void startCounter();
 		void stopCounter();
@@ -74,9 +74,9 @@ class MainWindow: public QMainWindow {
 		int checkResult(QTime result);
 		void showTopResult(int game);
 
-		private slots:
-		void on_action_NewGame_triggered();
-		void on_action_PauseGame_triggered();
+    private slots:
+        void startNewGame();
+        void on_action_PauseGame_triggered();
 		void on_action_About_triggered();
 		void on_action_Easy_triggered();
 		void on_action_Medium_triggered();
@@ -85,8 +85,6 @@ class MainWindow: public QMainWindow {
         void on_action_ShowToolbar_triggered();
         void on_action_EnableSounds_triggered();
 		void on_action_TopResults_triggered();
-		void on_btnNewGame_clicked();
-		void on_toolNewGame_clicked();
 		void on_toolPauseGame_clicked();
 		void slot_timerBtnTout();
 		void slot_squarePressed(KEYMSG_t msg);

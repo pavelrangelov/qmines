@@ -17,10 +17,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 	ui->action_Custom->setEnabled(false);
 
-	connect(ui->mainFrame, SIGNAL(squarePressed(KEYMSG_t)), this, SLOT(slot_squarePressed(KEYMSG_t)));
-	connect(ui->mainFrame, SIGNAL(gameFailed()), this, SLOT(slot_gameFailed()));
-	connect(ui->mainFrame, SIGNAL(gameDone()), this, SLOT(slot_gameDone()));
-	connect(ui->mainFrame, SIGNAL(flagsCountChanged(quint16)), this, SLOT(slot_setFlagsCount(quint16)));
+    QObject::connect(ui->mainFrame, &MainFrame::squarePressed, this, &MainWindow::slot_squarePressed);
+    QObject::connect(ui->mainFrame, &MainFrame::gameFailed, this, &MainWindow::slot_gameFailed);
+    QObject::connect(ui->mainFrame, &MainFrame::gameDone, this, &MainWindow::slot_gameDone);
+    QObject::connect(ui->mainFrame, &MainFrame::flagsCountChanged, this, &MainWindow::slot_setFlagsCount);
+    QObject::connect(ui->action_NewGame, &QAction::triggered, this, &MainWindow::startNewGame);
+    QObject::connect(ui->btnNewGame, &QToolButton::clicked, this, &MainWindow::startNewGame);
+    QObject::connect(ui->toolNewGame, &QToolButton::clicked, this, &MainWindow::startNewGame);
 
 	m_TimerBtn = new QTimer(this);
 	m_TimerBtn->setSingleShot(true);
@@ -42,11 +45,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->action_ShowToolbar->setChecked(true);
     ui->action_EnableSounds->setChecked(false);
 
-    m_soundSuccess.setSource(QUrl("qrc:/sounds/success.wav"));
-    m_soundSuccess.setLoopCount(1);
-    m_soundSuccess.setVolume(0.5f);
+    m_soundSuccess = new QSoundEffect(this);
+    m_soundSuccess->setSource(QUrl("qrc:/sounds/success.wav"));
+    m_soundSuccess->setLoopCount(1);
+    m_soundSuccess->setVolume(0.5f);
 
-	on_action_NewGame_triggered();
+    startNewGame();
 
 	QSettings settings;
 	restoreGeometry(settings.value(STORE_GEOMETRY).toByteArray());
@@ -65,12 +69,7 @@ void MainWindow::slot_timerBtnTout() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MainWindow::on_toolNewGame_clicked() {
-	on_action_NewGame_triggered();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void MainWindow::on_action_NewGame_triggered() {
+void MainWindow::startNewGame() {
 	if (m_FinishDialog) {
 		if (m_FinishDialog->isVisible()) {
 			m_FinishDialog->close();
@@ -181,16 +180,11 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MainWindow::on_btnNewGame_clicked() {
-	on_action_NewGame_triggered();
-}
-
-///////////////////////////////////////////////////////////////////////////////
 void MainWindow::on_action_Easy_triggered() {
 	QSettings settings;
     g_Settings.gameType = GAME_EASY;
     settings.setValue(STORE_GAME_TYPE, g_Settings.gameType);
-	on_btnNewGame_clicked();
+    startNewGame();
 	ui->mainFrame->doResize();
 }
 
@@ -199,7 +193,7 @@ void MainWindow::on_action_Medium_triggered() {
 	QSettings settings;
     g_Settings.gameType = GAME_MEDIUM;
     settings.setValue(STORE_GAME_TYPE, g_Settings.gameType);
-	on_btnNewGame_clicked();
+    startNewGame();
 	ui->mainFrame->doResize();
 }
 
@@ -208,7 +202,7 @@ void MainWindow::on_action_Hard_triggered() {
 	QSettings settings;
     g_Settings.gameType = GAME_HARD;
     settings.setValue(STORE_GAME_TYPE, g_Settings.gameType);
-	on_btnNewGame_clicked();
+    startNewGame();
 	ui->mainFrame->doResize();
 }
 
@@ -216,7 +210,7 @@ void MainWindow::on_action_Hard_triggered() {
 void MainWindow::on_action_ColorSettings_triggered() {
 	ColorSettingsDialog dialog(this);
 	dialog.exec();
-	on_action_NewGame_triggered();
+    startNewGame();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -292,7 +286,7 @@ void MainWindow::slot_gameDone() {
 		ui->mainFrame->showAllFlags();
 
         if (g_Settings.enableSounds) {
-            m_soundSuccess.play();
+            m_soundSuccess->play();
         }
 
 		int index = checkResult(m_ElapsedTime);

@@ -90,7 +90,7 @@ class MainFrame: public QFrame {
 		virtual void mousePressEvent(QMouseEvent*);
 		virtual void resizeEvent(QResizeEvent*);
 
-		signals:
+    signals:
 		void squarePressed(KEYMSG_t msg);
 		void gameFailed();
 		void gameDone();
